@@ -1,0 +1,240 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===== Kiri ===== */
+.login-left {
+  background: #111a2e;
+  color: #fff;
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #3b4bcc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 800;
+  margin-bottom: 28px;
+}
+
+.features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+}
+
+.features li {
+  display: flex;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d5dbe8;
+}
+
+.features li svg {
+  color: #5ad8b4;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.task-preview {
+  max-width: 416px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #18233b;
+  border: 1px solid #2a3652;
+}
+
+.task-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.task-top h3 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.badge-urgent {
+  background: #fde2e2;
+  color: #c62828;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.task-meta {
+  font-size: 13px;
+  color: #c3cadb;
+}
+
+.progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #2a3652;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #5ad8b4;
+  border-radius: 999px;
+}
+
+/* ===== Kanan ===== */
+.login-right {
+  background: #f5f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 376px;
+  background: #fff;
+  border: 1px solid #e6e8f0;
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-card h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111a2e;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #5b6475;
+  margin: 4px 0 18px;
+}
+
+.alert {
+  display: flex;
+  gap: 10px;
+  background: #fff0d6;
+  color: #7a4a00;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.alert svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.login-card > label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111a2e;
+  margin-bottom: 6px;
+}
+
+.login-card > input {
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #9aa0b4;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.login-card > input:focus {
+  outline: 2px solid #3b4bcc;
+  border-color: transparent;
+}
+
+.row-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3a4252;
+}
+
+.row-options a,
+.signup a {
+  color: #3b4bcc;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary {
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #3b4bcc;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #3140b0;
+}
+
+.signup {
+  text-align: center;
+  font-size: 14px;
+  color: #3a4252;
+  margin-top: 18px;
+}
+
+/* Layar kecil: sisi kiri disembunyikan */
+@media (max-width: 900px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+  .login-left {
+    display: none;
+  }
+}
