@@ -148,7 +148,9 @@ constraint fk_task_member foreign key (task_member_id)
 constraint fk_matkul_task foreign key (matkul_id)
 	references mata_kuliah(matkul_id) on delete restrict,
 constraint fk_created_task foreign key (created_by)
-	references user_profiles(user_id) on delete restrict)
+	references user_profiles(user_id) on delete restrict,
+constraint chk_task_comb_identity check(user_id is not null and organization_id is null and member_id is null)
+	or (user_id is null and organization_id is not null and member_id is not null))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table universal_sub_task (
@@ -179,5 +181,7 @@ constraint fk_s_task_member foreign key (task_member_id)
 constraint fk_matkul_s_task foreign key (matkul_id)
 	references mata_kuliah(matkul_id) on delete restrict,
 constraint fk_created_s_task foreign key (created_by)
-	references user_profiles(user_id) on delete restrict)
+	references user_profiles(user_id) on delete restrict,
+constraint chk_s_task_comb_identity check(user_id is not null and organization_id is null and member_id is null)
+	or (user_id is null and organization_id is not null and member_id is not null))
 ENGINE=InnoDB default CHARSET=utf8mb4;
