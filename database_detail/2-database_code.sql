@@ -1,0 +1,152 @@
+create table user_authentication (
+user_auth_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+email varchar(260) not null,
+password_hash text not null,
+created_at timestamp not null default current_timestamp,
+password_reset_at timestamp null,
+is_active boolean not null)
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table universities (
+university_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+university_code int unsigned not null,
+university_name varchar(100) not null,
+country_code varchar(5) not null, -- like 'IDN', 'SGN', 'USA', etc.
+is_custom boolean null default FALSE,
+university_website varchar(300) not null,
+slug varchar(300) not null unique,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint uq_slug_university unique (slug),
+constraint uq_university_code unique (university_code))
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table faculties (
+faculty_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+university_id binary(16) not null,
+faculty_code int unsigned not null,
+faculty_name varchar(100) not null,
+slug varchar(300) not null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint fk_faculty_university foreign key (university_id)
+	references universities(university_id) on delete restrict,
+constraint uq_faculty_slug unique (slug),
+constraint uq_faculty_code unique (faculty_code))
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table study_programs (
+prodi_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+faculty_id binary(16) not null,
+prodi_code int unsigned not null,
+prodi_name varchar(100) not null,
+slug varchar(300) not null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint fk_prodi_faculty foreign key (faculty_id)
+	references faculties(faculty_id) on delete restrict,
+constraint uq_prodi_slug unique (slug),
+constraint uq_prodi_code unique (prodi_code))
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table user_profiles (
+user_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+user_auth_id binary(16) not null,
+front_name varchar(50) not null,
+back_name varchar(50) not null,
+username varchar(40) not null,
+university_id binary(16) null,
+faculty_id binary(16) null,
+prodi_id binary(16) null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+avatar_url varchar(260) null,
+theme varchar(40) not null default 'system',
+
+constraint fk_user_auth foreign key (user_auth_id)
+	references user_authentication(user_auth_id),
+constraint fk_user_university foreign key (university_id)
+	references universities(university_id),
+constraint fk_user_faculty foreign key (faculty_id)
+	references faculties(faculty_id) on delete restrict,
+constraint fk_user_prodi foreign key (prodi_id)
+	references study_programs(prodi_id) on delete restrict,
+constraint chk_regex_username check (username REGEXP '^[A-Za-z0-9_.,-]+$'))
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table mata_kuliah (
+matkul_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+user_id binary(16) not null,
+prodi_id binary(16) not null,
+matkul_code int unsigned not null,
+matkul_name varchar(100) not null,
+sks tinyint unsigned not null,
+semester tinyint unsigned not null,
+created_at timestamp not null default current_timestamp,
+
+constraint fk_user_matkul foreign key (user_id)
+	references user_profiles(user_id) on delete restrict,
+constraint fk_matkul_prodi foreign key (prodi_id)
+	references study_programs(prodi_id) on delete restrict,
+constraint uq_matkul_code unique(matkul_code));
+
+create table study_group (
+group_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+matkul_id binary(16) not null,
+created_by binary(16) not null,
+group_name varchar(30) not null,
+description varchar(250) null,
+avatar_url varchar(260) null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint fk_matkul_group foreign key (matkul_id)
+	references mata_kuliah(matkul_id) on delete restrict,
+constraint fk_created_group foreign key (created_by)
+	references user_profiles(user_id) on delete restrict)
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table group_member (
+member_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+group_id binary(16) not null,
+user_member binary(16) not null,
+user_role varchar(40) not null default 'Member',
+joined_method varchar(50) not null,
+joined_at timestamp not null default current_timestamp,
+
+constraint fk_user_member foreign key (user_member)
+	references user_profiles(user_id) on delete restrict,
+constraint fk_group_member foreign key (group_id)
+	references study_froup(group_id) on delete restrict)
+ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table universal_tasks (
+task_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+user_id binary(16) null, -- untuk task personal
+group_id binary(16) null, -- untuk task group
+task_member_id binary(16) null, -- kalo baris tersebut adalah task group, maka wajib ada, tugas ini punya member siapa
+matkul_id binary(16) not null,
+created_by binary(16) not null,
+task_title varchar(40) not null,
+description varchar(250) null,
+deadline datetime not null,
+priority_status varchar(20) not null default 'High',
+task_status varchar(20) not null default 'Belum Selesai',
+url_task_file varchar(300) null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint fk_user_task foreign key (user_id)
+	references user_profiles(user_id) on delete restrict,
+constraint fk_group_task foreign key (group_id)
+	references study_group(group_id) on delete restrict,
+constraint fk_task_member foreign key (task_member_id)
+	references group_member(member_id) on delete restrict,
+constraint fk_matkul_task foreign key (matkul_id)
+	references mata_kuliah(matkul_id) on delete restrict,
+constraint fk_created_task foreign key (created_by)
+	references user_profiles(user_id) on delete restrict)
+ENGINE=InnoDB default CHARSET=utf8mb4;
