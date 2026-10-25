@@ -150,3 +150,34 @@ constraint fk_matkul_task foreign key (matkul_id)
 constraint fk_created_task foreign key (created_by)
 	references user_profiles(user_id) on delete restrict)
 ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table universal_sub_task (
+s_task_id binary(16) primary key default (uuid_to_bin(uuid(), 1)),
+task_id binary(16) not null,
+user_id binary(16) null, -- untuk sub task personal
+group_id binary(16) null, -- untuk sub task group
+s_task_member binary(16) null, -- jika baris tersebut adalah task group, maka wajib ada. untuk mengetahui tugas ini punya member siapa
+matkul_id binary(16) not null,
+created_by binary(16) not null,
+s_task_title varchar(40) not null,
+description varchar(250) null,
+deadline datetime not null,
+priority_status varchar(20) not null default 'High',
+s_task_status varchar(20) not null default 'Belum Selesai',
+url_task_file varchar(300) null,
+created_at timestamp not null default current_timestamp,
+updated_at timestamp null,
+
+constraint fk_s_task_task foreign key (task_id)
+	references universal_task(task_id) on delete restrict,
+constraint fk_user_s_task foreign key (user_id)
+	references user_profiles(user_id) on delete restrict,
+constraint fk_group_s_task foreign key (group_id)
+	references study_group(group_id) on delete restrict,
+constraint fk_s_task_member foreign key (task_member_id)
+	references group_member(member_id) on delete restrict,
+constraint fk_matkul_s_task foreign key (matkul_id)
+	references mata_kuliah(matkul_id) on delete restrict,
+constraint fk_created_s_task foreign key (created_by)
+	references user_profiles(user_id) on delete restrict)
+ENGINE=InnoDB default CHARSET=utf8mb4;
