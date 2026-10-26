@@ -185,3 +185,21 @@ constraint fk_created_s_task foreign key (created_by)
 constraint chk_s_task_comb_identity check(user_id is not null and organization_id is null and member_id is null)
 	or (user_id is null and organization_id is not null and member_id is not null))
 ENGINE=InnoDB default CHARSET=utf8mb4;
+
+create table commentar (
+commentar_id uuid primary key default (uuid_to_bin(uuid(), 1)),
+user_id uuid not null,
+task_id uuid null,
+s_task_id uuid null,
+commentar varchar(250) not null,
+created_at timestamp not null default current_timestamp,
+
+constraint fk_user_commentar foreign key (user_id)
+	references user_profiles(user_id) on delete restrict,
+constraint fk_task_commentat foreign key (task_id)
+	references universal_tasks(task_id) on delete restrict,
+constraint fk_s_task_commentar foreign key (s_task_id)
+	references universal_sub_task(s_task_id) on delete restrict,
+constraint chk_commentar_identity_comb check (user_id is not null and task_id is not null and s_task_id is null)
+	or (user_id is not null and task_id is null and s_task_id is not null))
+ENGINE=InnoDB default CHARSET=utf8mb4;
