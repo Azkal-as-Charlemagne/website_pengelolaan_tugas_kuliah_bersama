@@ -6,16 +6,15 @@ created_at timestamp not null default current_timestamp,
 password_reset_at timestamp null,
 is_active boolean not null,
 
-constraint uq_user_email unique (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+constraint chk_user_email check (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table universities (
 university_id binary(16) primary key default (uuid_to_bin(uuid())),
+univ_external_id_api varchar()
 university_code varchar(30) not null,
 university_name varchar(100) not null,
 country_code varchar(5) not null, -- like 'IDN', 'SGP', 'USA', etc.
-is_custom boolean null default FALSE,
-university_website varchar(300) not null, -- portal universitas
 university_slug varchar(300) not null unique,
 created_at timestamp not null default current_timestamp,
 updated_at timestamp null,
@@ -45,14 +44,14 @@ faculty_id binary(16) not null,
 prodi_code varchar(30) not null,
 prodi_name varchar(100) not null,
 prodi_slug varchar(300) not null,
+jenjang varchar(15) not null,
 created_at timestamp not null default current_timestamp,
 updated_at timestamp null,
 
 constraint fk_prodi_faculty foreign key (faculty_id)
 	references faculties(faculty_id) on delete restrict,
 constraint uq_prodi_code unique (prodi_code),
-constraint uq_prodi_faculty_comb unique (faculty_id, prodi_slug),
-constraint chk_email check (email REGEXP ()
+constraint uq_prodi_faculty_comb unique (faculty_id, prodi_slug))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table user_profiles (
