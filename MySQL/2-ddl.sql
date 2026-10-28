@@ -11,8 +11,9 @@ ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table universities (
 university_id binary(16) primary key default (uuid_to_bin(uuid())),
-univ_external_id_api varchar()
 university_code varchar(30) not null,
+university_source varchar(20) not null,
+source_id varchar(100) not null,
 university_name varchar(100) not null,
 country_code varchar(5) not null, -- like 'IDN', 'SGP', 'USA', etc.
 university_slug varchar(300) not null unique,
@@ -26,6 +27,8 @@ ENGINE=InnoDB default CHARSET=utf8mb4;
 create table faculties (
 faculty_id binary(16) primary key default (uuid_to_bin(uuid())),
 university_id binary(16) not null,
+faculty_source varchar(20) not null,
+faculty_source_id varchar(100) not null,
 faculty_code varchar(30) not null,
 faculty_name varchar(100) not null,
 faculty_slug varchar(300) not null,
@@ -41,6 +44,8 @@ ENGINE=InnoDB default CHARSET=utf8mb4;
 create table study_programs (
 prodi_id binary(16) primary key default (uuid_to_bin(uuid())),
 faculty_id binary(16) not null,
+prodi_source varchar(20) not null,
+pordi_source_id varchar(100) not null,
 prodi_code varchar(30) not null,
 prodi_name varchar(100) not null,
 prodi_slug varchar(300) not null,
