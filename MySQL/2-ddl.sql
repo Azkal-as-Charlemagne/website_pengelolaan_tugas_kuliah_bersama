@@ -6,6 +6,7 @@ created_at timestamp not null default current_timestamp,
 password_reset_at timestamp null,
 is_active boolean not null,
 
+constraint uq_user_email unique (email),
 constraint chk_user_email check (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
@@ -21,7 +22,7 @@ created_at timestamp not null default current_timestamp,
 updated_at timestamp null,
 
 constraint uq_slug_university unique (university_slug),
-constraint uq_university_code unique (university_code))
+constraint uq_university_comb unique (university_code, source_id, university_slug))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table faculties (
@@ -38,14 +39,14 @@ updated_at timestamp null,
 constraint fk_faculty_university foreign key (university_id)
 	references universities(university_id) on delete restrict,
 constraint uq_faculty_code unique (faculty_code),
-constraint uq_faculty_university_comb unique (university_id, faculty_slug))
+constraint uq_faculty_university_comb unique (university_id, faculty_source_id, faculty_slug))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table study_programs (
 prodi_id binary(16) primary key default (uuid_to_bin(uuid())),
 faculty_id binary(16) not null,
 prodi_source varchar(20) not null,
-pordi_source_id varchar(100) not null,
+prodi_source_id varchar(100) not null,
 prodi_code varchar(30) not null,
 prodi_name varchar(100) not null,
 prodi_slug varchar(300) not null,
@@ -56,7 +57,7 @@ updated_at timestamp null,
 constraint fk_prodi_faculty foreign key (faculty_id)
 	references faculties(faculty_id) on delete restrict,
 constraint uq_prodi_code unique (prodi_code),
-constraint uq_prodi_faculty_comb unique (faculty_id, prodi_slug))
+constraint uq_prodi_faculty_comb unique (faculty_id, prodi_source_id, prodi_slug))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table user_profiles (
@@ -135,7 +136,7 @@ create table universal_tasks (
 task_id binary(16) primary key default (uuid_to_bin(uuid())),
 user_id binary(16) null, -- untuk task personal
 group_id binary(16) null, -- untuk task group
-task_member_id binary(16) null, -- kalo baris tersebut adalah task group, maka wajib ada, tugas ini punya member siapa
+task_member binary(16) null, -- kalo baris tersebut adalah task group, maka wajib ada, tugas ini punya member siapa
 matkul_id binary(16) not null,
 created_by binary(16) not null,
 task_title varchar(40) not null,
@@ -151,14 +152,14 @@ constraint fk_user_task foreign key (user_id)
 	references user_profiles(user_id) on delete restrict,
 constraint fk_group_task foreign key (group_id)
 	references study_group(group_id) on delete restrict,
-constraint fk_task_member foreign key (task_member_id)
+constraint fk_task_member foreign key (task_member)
 	references group_member(member_id) on delete restrict,
 constraint fk_matkul_task foreign key (matkul_id)
 	references mata_kuliah(matkul_id) on delete restrict,
 constraint fk_created_task foreign key (created_by)
 	references user_profiles(user_id) on delete restrict,
-constraint chk_task_comb_identity check((user_id is not null and group_id is null and task_member_id is null)
-	or (user_id is null and group_id is not null and task_member_id is not null)))
+constraint chk_task_comb_identity check((user_id is not null and group_id is null and task_member is null)
+	or (user_id is null and group_id is not null and task_member is not null)))
 ENGINE=InnoDB default CHARSET=utf8mb4;
 
 create table universal_sub_task (
@@ -184,7 +185,7 @@ constraint fk_user_s_task foreign key (user_id)
 	references user_profiles(user_id) on delete restrict,
 constraint fk_group_s_task foreign key (group_id)
 	references study_group(group_id) on delete restrict,
-constraint fk_s_task_member foreign key (s_task_member_id)
+constraint fk_s_task_member foreign key (s_task_member)
 	references group_member(member_id) on delete restrict,
 constraint fk_matkul_s_task foreign key (matkul_id)
 	references mata_kuliah(matkul_id) on delete restrict,
